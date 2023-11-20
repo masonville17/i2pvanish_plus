@@ -17,7 +17,7 @@ You can customize the setup by filling out `exclude_countries` with any 2-letter
 Build the Docker image using the following command:
 
 ```bash
-docker build -t my2p .
+docker build -t i2pvanishplus .
 ```
 ## Run Instructions
 
