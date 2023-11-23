@@ -18,15 +18,21 @@ echo "Today, we'll connect to $OVPN_FILE"
 
 sed -i '/keysize/d' "${OVPN_FILE}"
 
-sleep 5
-echo "vpn should be connected by now."
-ip a
-sleep 15
 # Local ports to exclude from VPN
 iptables -A OUTPUT -o tun0 -p tcp --dport 7657 -j DROP
 iptables -A OUTPUT -o tun0 -p tcp --dport 4445 -j DROP
 iptables -A OUTPUT -o tun0 -p tcp --dport 4444 -j DROP
 iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+
+openvpn --config "${OVPN_FILE}" --auth-user-pass pass & 
+vpn_pid=$!
+
+sleep 45  # Wait for VPN to establish connection
+if ip a show tun0 up > /dev/null 2>&1; then
+    echo "VPN is connected."
+else
+    echo "VPN connection failed."
+fi
 
 echo "installing and configuring i2p"
 
@@ -57,9 +63,10 @@ echo "updating i2p config"
 sed -i '/clientApp\.0\.args/c\clientApp.0.args=7657 0.0.0.0 ./webapps/' /app/i2p/i2ptunnel.config
 
 while true; do
+
     i2pinfos=$(./i2prouter start)
     ipinfos=$(ip a)
     echo "i2p info: $i2pinfos... ipinfos: $ipinfos... Sleeping 10m..."
     sleep 600
 done
-wait
+trap "kill $vpn_pid" EXIT

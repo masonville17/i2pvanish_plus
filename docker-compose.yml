@@ -12,6 +12,10 @@ services:
     volumes:
       - i2psnark-volume:/app/i2p/i2psnark
       - i2p-config-volume:/app/i2p
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - "/dev/net/tun:/dev/net/tun"            
     environment:
       - DEBIAN_FRONTEND=noninteractive
     restart: unless-stopped
