@@ -65,9 +65,10 @@ echo "updating i2p config"
 sed -i '/clientApp\.0\.args/c\clientApp.0.args=7657 0.0.0.0 ./webapps/' /app/i2p/i2ptunnel.config
 
 while true; do
+    vpn_infos=$(ps -f -p $vpn_pid)
     i2pinfos=$(./i2prouter start)
     ipinfos=$(ip a)
-    echo "vpn PID: $vpn_pid i2p info: $i2pinfos... ipinfos: $ipinfos... Sleeping 10m..."
+    echo "vpn infos: PID: $vpn_pid, vpn_infos... i2p info: $i2pinfos... ipinfos: $ipinfos... Sleeping 10m..."
     sleep 600
 done
 trap "kill $vpn_pid" EXIT
