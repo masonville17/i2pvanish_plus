@@ -37,27 +37,28 @@ else
     exit 1
 fi
 
-echo "installing and configuring i2p"
 
+# Add non-root user and switch to it
+useradd -m i2puser
+cd /home/i2puser
+
+echo "installing and configuring i2p"
 wget http://i2pplus.github.io/installers/$I2P_VERSION
-INSTALLER_PATH="./$I2P_VERSION"
+INSTALLER_PATH="/home/i2puser/$I2P_VERSION"
 chmod +x $INSTALLER_PATH
 
-/usr/bin/expect <<EOF
+sudo -u i2puser /usr/bin/expect <<EOF
 spawn java -jar $INSTALLER_PATH -console
 expect "press 1 to continue, 2 to quit, 3 to redisplay"
 send "1\r"
 expect "Select target path"
-send "/app/i2p\r"
+send "/home/i2puser/i2p\r"
 expect "press 1 to continue, 2 to quit, 3 to redisplay"
 send "1\r"
 expect eof
 EOF
 
-# Add non-root user and switch to it
-useradd -m i2puser
-chown -R i2puser:i2puser ./*
-
+cd /home/i2puser/i2p
 sudo -u i2puser ./i2prouter start && sleep 10 && sudo -u i2puser ./i2prouter stop
 echo "updating i2p config"
 
