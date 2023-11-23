@@ -29,7 +29,7 @@ openvpn --config "${OVPN_FILE}" --auth-user-pass pass &
 vpn_pid=$!
 
 # Wait for VPN to establish connection and check if connection is established
-sleep 45
+sleep 20
 if ip a show tun0 up > /dev/null 2>&1; then
     echo "VPN is connected."
 else
@@ -54,8 +54,7 @@ expect "press 1 to continue, 2 to quit, 3 to redisplay"
 send "1\r"
 expect eof
 EOF
-
-chmod +x i2prouter
+cd i2p && chmod +x i2prouter
 ./i2prouter start
 sleep 10
 ./i2prouter stop
