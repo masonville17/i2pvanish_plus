@@ -5,7 +5,7 @@ RUN apt-get update
 RUN apt-get install -y \
     default-jdk \
     openvpn \
-    tor \
+    sudo \
     ca-certificates \
     vim \
     expect \
