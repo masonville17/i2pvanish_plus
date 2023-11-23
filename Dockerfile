@@ -6,6 +6,7 @@ RUN apt-get install -y \
     default-jdk \
     openvpn \
     sudo \
+    procps \
     ca-certificates \
     vim \
     expect \
