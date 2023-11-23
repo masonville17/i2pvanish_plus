@@ -15,7 +15,8 @@ done
 
 OVPN_FILE=$(find . -name "*.ovpn" | shuf -n 1)
 echo "Today, we'll connect to $OVPN_FILE"
-openvpn --config "${OVPN_FILE}" --auth-user-pass pass &
+
+sed -i '/keysize/d' "${OVPN_FILE}"
 
 sleep 5
 echo "vpn should be connected by now."
