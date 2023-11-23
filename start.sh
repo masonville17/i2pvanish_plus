@@ -39,10 +39,9 @@ fi
 
 echo "installing and configuring i2p"
 
-mkdir ./i2p && cd ./i2p
-
 wget http://i2pplus.github.io/installers/$I2P_VERSION
-INSTALLER_PATH="./$I2P_VERSION" && chmod +x $INSTALLER_PATH
+INSTALLER_PATH="./$I2P_VERSION"
+chmod +x $INSTALLER_PATH
 
 /usr/bin/expect <<EOF
 spawn java -jar $INSTALLER_PATH -console
@@ -54,18 +53,19 @@ expect "press 1 to continue, 2 to quit, 3 to redisplay"
 send "1\r"
 expect eof
 EOF
-cd i2p && chmod +x i2prouter
-./i2prouter start
-sleep 10
-./i2prouter stop
 
+# Add non-root user and switch to it
+useradd -m i2puser
+chown -R i2puser:i2puser ./*
+
+sudo -u i2puser ./i2prouter start && sleep 10 && sudo -u i2puser ./i2prouter stop
 echo "updating i2p config"
 
-sed -i '/clientApp\.0\.args/c\clientApp.0.args=7657 0.0.0.0 ./webapps/' /app/i2p/i2ptunnel.config
+sudo -u i2puser sed -i '/clientApp\.0\.args/c\clientApp.0.args=7657 0.0.0.0 ./webapps/' /app/i2p/i2ptunnel.config
 
 while true; do
     vpn_infos=$(ps -f -p $vpn_pid)
-    i2pinfos=$(./i2prouter start)
+    i2pinfos=$(sudo -u i2puser ./i2prouter start)
     ipinfos=$(ip a)
     echo "vpn infos: PID: $vpn_pid, vpn_infos... i2p info: $i2pinfos... ipinfos: $ipinfos... Sleeping 10m..."
     sleep 600
