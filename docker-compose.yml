@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  i2p-service:
+  i2pvanish_plus:
     build:
       context: .
       dockerfile: Dockerfile
