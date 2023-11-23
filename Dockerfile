@@ -16,13 +16,9 @@ RUN apt-get install -y \
     dnsutils \
     net-tools && apt-get clean && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-EXPOSE 7657 4445 4444
-RUN useradd -m i2puser && \
-    chown -R i2puser:i2puser /app
 
-USER i2puser
-
-COPY --chown=i2puser:i2puser start.sh exclude_countries pass /app/
+COPY start.sh exclude_countries pass /app/
 RUN chmod +x /app/start.sh
+EXPOSE 7657 4445 4444
 
 CMD ["./start.sh"]
