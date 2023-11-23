@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  i2p-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7657:7657"
+      - "4445:4445"
+      - "4444:4444"
+    volumes:
+      - i2psnark-volume:/app/i2p/i2psnark
+      - i2p-config-volume:/app/i2p
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    restart: unless-stopped
+
+volumes:
+  i2psnark-volume:
+  i2p-config-volume:
