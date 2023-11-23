@@ -21,7 +21,8 @@ RUN useradd -m i2puser && \
     chown -R i2puser:i2puser /app
 
 USER i2puser
-COPY --chown=i2puser:i2puser start.sh /app/
+
+COPY --chown=i2puser:i2puser start.sh exclude_countries pass /app/
 RUN chmod +x /app/start.sh
 
 CMD ["./start.sh"]
