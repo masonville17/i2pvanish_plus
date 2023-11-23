@@ -20,6 +20,6 @@ WORKDIR /app
 
 COPY start.sh exclude_countries pass /app/
 RUN chmod +x /app/start.sh
-EXPOSE 7657 4445 4444
+EXPOSE 7657 7667 4445 4444
 
 CMD ["./start.sh"]

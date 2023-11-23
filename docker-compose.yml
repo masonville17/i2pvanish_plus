@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "7657:7657"
+      - "7667:7667"
       - "4445:4445"
       - "4444:4444"
     volumes:
