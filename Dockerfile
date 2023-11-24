@@ -11,6 +11,7 @@ RUN apt-get install -y \
     vim \
     expect \
     iproute2 \
+    curl \
     wget \
     unzip \
     iptables \

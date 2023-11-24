@@ -2,6 +2,9 @@
 VPN_INTERFACE="tun0"
 OPENVPN_CONFIGS_ZIP_URL="https://configs.ipvanish.com/configs/configs.zip"
 I2P_VERSION="i2pinstall_2.3.0+.exe"
+I2P_USER_CONFIG_DIR="/home/i2puser/i2p_config"
+I2P_USER_CONFIG_FILES=($config_dir/*.config)
+ORIGINAL_EXTERNAL_IP=$(curl -s https://ipinfo.io/ip)
 
 # Local ports to exclude from VPN
 echo "Adding iptable rules"
@@ -29,7 +32,7 @@ openvpn --config "${OVPN_FILE}" --auth-user-pass pass &
 vpn_pid=$!
 
 # Wait for VPN to establish connection and check if connection is established
-sleep 20
+sleep 5
 if ip a show tun0 up > /dev/null 2>&1; then
     echo "VPN is connected."
 else
@@ -37,10 +40,9 @@ else
     exit 1
 fi
 
-
 # Add non-root user and switch to it
 useradd -m i2puser
-cd /home/i2puser
+cd /home/i2puser && chown -R i2puser /home/i2puser
 
 echo "installing and configuring i2p"
 wget http://i2pplus.github.io/installers/$I2P_VERSION
@@ -59,16 +61,26 @@ expect eof
 EOF
 
 cd /home/i2puser/i2p
-sudo -u i2puser ./i2prouter start && sleep 10 && sudo -u i2puser ./i2prouter stop
-echo "updating i2p config"
+echo "Updating I2p configuration"
 
-sudo -u i2puser sed -i '/clientApp\.0\.args/c\clientApp.0.args=7657 0.0.0.0 ./webapps/' /app/i2p/i2ptunnel.config
+sudo -u i2puser ./i2prouter start && sleep 10 && sudo -u i2puser ./i2prouter stop
+sudo -u i2puser sed -i '/clientApp\.0\.args/c\clientApp.0.args=7657 0.0.0.0 ./webapps/' /home/i2puser/i2p/i2ptunnel.config
+
+if [ ${#config_files[@]} -gt 0 ] && [ -e "${config_files[0]}" ]; then
+    for file in "${config_files[@]}"; do
+        echo "Copying user-defined config file $file..."
+        cp "$file" /home/i2puser/i2p/
+    done
+else
+    echo "No user-specified .config files found in $config_dir. Skipping copy."
+fi
 
 while true; do
     vpn_infos=$(ps -f -p $vpn_pid)
     i2pinfos=$(sudo -u i2puser ./i2prouter start)
-    ipinfos=$(ip a)
-    echo "vpn infos: PID: $vpn_pid, vpn_infos... i2p info: $i2pinfos... ipinfos: $ipinfos... Sleeping 10m..."
+    ip_addr=$(curl -s https://ipinfo.io/ip)
+    ip_addr_infos="You are using $ip_addr as your external IP address (originally $ORIGINAL_EXTERNAL_IP)..."    
+    echo "vpn infos: PID: $vpn_pid, vpn_infos... i2p info: $i2pinfos... ipinfos: $ip_addr_infos... Sleeping 10m..."
     sleep 600
 done
 trap "kill $vpn_pid" EXIT
