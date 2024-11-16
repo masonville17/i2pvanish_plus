@@ -1,4 +1,21 @@
 #!/bin/bash
+
+# select random ovpn file and establish connection
+OVPN_FILE=$(find . -name "*.ovpn" | shuf -n 1)
+echo "Establishing Connection with $OVPN_FILE"
+sed -i '/keysize/d' "${OVPN_FILE}"
+
+openvpn --config "${OVPN_FILE}" --auth-user-pass pass & 
+export vpn_pid=$!
+
+sleep 5
+if ip a show tun0 up > /dev/null 2>&1; then
+    echo "VPN is connected."
+else
+    echo "VPN connection failed."
+    exit 1
+fi
+
 while true; do
     vpn_infos=$(ps -f -p $vpn_pid)
     i2pinfos=$(sudo -u $I2P_USER ./i2prouter start)
