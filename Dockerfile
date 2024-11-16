@@ -49,4 +49,4 @@ RUN /bin/bash -c "/app/setup-i2p.sh"
 
 EXPOSE 7657 7667 4445 4444
 
-ENTRYPOINT [ "/bin/bash", "-c", "docker-entrypoint.sh" ]
+ENTRYPOINT [ "/bin/bash", "-c", "/app/docker-entrypoint.sh" ]
