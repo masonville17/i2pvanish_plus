@@ -1,4 +1,5 @@
 #!/bin/bash
+./.prefs
 
 ORIGINAL_EXTERNAL_IP="$(curl -s https://ipinfo.io/ip)"
 
@@ -28,7 +29,7 @@ fi
 while true; do
     vpn_infos=$(ps -f -p $OPENVPN_PID)
     i2pinfos=$(sudo -u $I2P_USER ./i2prouter start)
-    
+
     EXTERNAL_IP_ADDRESS=$(curl -s https://ipinfo.io/ip)
     EXTERNAL_IP_ADDRESS_infos="You are using $EXTERNAL_IP_ADDRESS as your external IP address (originally $ORIGINAL_EXTERNAL_IP)..."    
     echo "vpn infos: PID: $OPENVPN_PID, vpn_infos... i2p info: $i2pinfos... ipinfos: $EXTERNAL_IP_ADDRESS_infos... Sleeping 10m..."

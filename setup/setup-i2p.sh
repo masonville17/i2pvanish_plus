@@ -1,5 +1,8 @@
 #!/bin/bash
+./.prefs
+
 echo "installing and configuring i2p"
+I2P_DOWNLOAD_URL="$I2P_DOWNLOAD_URL:-$(cat /tmp/i2p_download_url)"
 wget "$I2P_DOWNLOAD_URL"
 INSTALLER_PATH="/home/$I2P_USER/$I2P_VERSION"
 chmod +x $INSTALLER_PATH
