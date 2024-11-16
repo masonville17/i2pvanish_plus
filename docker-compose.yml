@@ -14,7 +14,6 @@ services:
       - i2p_config:/home/i2puser/i2p_config
     cap_add:
       - NET_ADMIN
-    network_mode: "host"
     devices:
       - "/dev/net/tun:/dev/net/tun"            
     environment:
