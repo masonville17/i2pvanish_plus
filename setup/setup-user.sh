@@ -1,4 +1,4 @@
 #!/bin/bash
 # Add non-root user and switch to it
-useradd -m i2puser
-cd /home/i2puser && chown -R i2puser /home/i2puser
+useradd -m $I2P_USER
+cd /home/$I2P_USER && chown -R $I2P_USER /home/$I2P_USER

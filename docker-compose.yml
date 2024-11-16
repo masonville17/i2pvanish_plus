@@ -11,7 +11,7 @@ services:
       - "4445:4445"
       - "4444:4444"
     volumes:
-      - i2p_config:/home/i2puser/i2p_config
+      - i2p_config:/home/$I2P_USER/i2p_config
     cap_add:
       - NET_ADMIN
     devices:
