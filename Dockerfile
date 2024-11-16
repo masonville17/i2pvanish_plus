@@ -27,17 +27,16 @@ RUN apt-get update && \
         iptables \
         dnsutils \
         net-tools && \
-    apt-get clean && \
-        export I2P_VERSION=${I2P_VERSION:-$(curl -s https://i2pplus.github.io/ | grep -oP 'i2pinstall_\K[0-9]+\.[0-9]+\.\d+\+' | head -n 1)} && \
+    apt-get clean
+
+RUN export I2P_VERSION=${I2P_VERSION:-$(curl -s https://i2pplus.github.io/ | grep -oP 'i2pinstall_\K[0-9]+\.[0-9]+\.\d+\+' | head -n 1)} && \
         export I2P_DOWNLOAD_URL="https://i2pplus.github.io/installers/i2pinstall_${I2P_VERSION}.exe" > /tmp/i2p_download_url
 
 RUN echo "beginning environment setup." && \
     chmod +x ./docker-entrypoint.sh && \
-    chmod +x ./setup-network.sh && \
     chmod +x ./setup-user.sh && \
     chmod +x ./setup-openvpn.sh && \
     chmod +x ./setup-i2p.sh && \
-        /bin/bash -c "echo 'setting up network' && ./setup-network.sh" && \
         /bin/bash -c "echo 'setting up user' && ./setup-user.sh" && \
         /bin/bash -c "echo 'setting up openvpn' && ./setup-openvpn.sh" && \
         /bin/bash -c "echo 'setting up i2p' && ./setup-i2p.sh"
